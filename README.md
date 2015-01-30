@@ -1,1 +1,3 @@
-#CompE275 Lab 1: Sorting
+#CompE275 Labs
+
+Done by Vincent Chan, with 815909699.
