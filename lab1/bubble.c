@@ -58,3 +58,8 @@ void sortArray(int a[], int size) {
 } //End sortArray()
 /**                                 **/
 /*************************************/
+
+/**********
+ * Dust amassed
+ *  Creates mountains
+ **********/
