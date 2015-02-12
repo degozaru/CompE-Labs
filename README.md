@@ -12,3 +12,7 @@ Sorting
 
 Bit operations, format modifiers
 
+###Lab 3
+
+Structs, addressing struct variables
+
