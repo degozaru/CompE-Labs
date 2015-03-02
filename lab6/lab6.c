@@ -34,6 +34,9 @@ int main(void) {
 
 //This function will handle all initialization of the system.
 void Init() {
+  //Configure clock
+  RCC->AHBENR |= (1<<17);
+
   //Configure the interrupt to run every millisecond
   SysTick_Config(SystemCoreClock/1000);
 
