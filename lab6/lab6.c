@@ -59,14 +59,16 @@ void Init() {
 //This function is the interrupt function.
 //This will happen every millisecond.
 void SysTick_Handler() {
-  //Increase ms tick and debouncer tick.
+  /*Increase ms tick and debouncer tick.*/
   msTick++;
   validPress--;
 
   //This is what will happen when
   //the button is pressed.
-  if(butPress()) {
+  //This includes a debouncer.
+  if(butPress() && validPress<0) {
     GPIOC->BSRR |= (1<< LED9);
+    /*Gives the button a 10 ms debounce*/
     validPress=10;
     (blinkRate<10)?blinkRate++ : blinkRate=1;
     while(butPress());
@@ -75,9 +77,8 @@ void SysTick_Handler() {
 } //End SysTick_Handler()
 
 //Returns 1 if button is pressed
-//Debouncing is included.
 uint32_t butPress() {
-  return (GPIOA->IDR & (1<<BUT) && validPress<0);
+  return (GPIOA->IDR & (1<<BUT));
 } //End butPress()
 
 //This will delay by specified milliseconds
@@ -85,7 +86,7 @@ void delay(uint32_t time) {
   time += msTick;
   while(msTick<=time);
   msTick=0;
-}
+} //End delay()
 /**                                    **/
 /****************************************/
 
