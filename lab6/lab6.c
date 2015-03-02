@@ -42,7 +42,7 @@ void Init() {
   RCC->AHBENR |= (1<<19);
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
   /*Configure button as input, and no pull up*/
-  GPIOA->MODER &= (3<<BUT*2);
+  GPIOA->MODER &= ~(3<<BUT*2);
   GPIOA->OTYPER &= ~(3<<BUT*2);
 } //End Init()
 
