@@ -15,7 +15,7 @@
 //Variable declarations
 volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
-uint32_t validPress=0;
+int validPress=0;
 
 //Prototype functions
 void Init();                    //Ln. 45
