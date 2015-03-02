@@ -13,7 +13,7 @@
 #define BUT 0
 
 //Variable declarations
-Volatile uint32_t msTick = 0;
+volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
 uint32_t validPress=0;
 
