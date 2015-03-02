@@ -8,6 +8,7 @@
 
 #define LED8 8
 #define LED9 9
+#define BUT 0
 
 //Variable declarations
 volatile uint32_t msTick = 0;
@@ -39,13 +40,23 @@ void Init() {
   //Configure 8th and 9th pin as output.
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
 
+  //Configure button as input, and no pull up
+  GPIOA->MODER &= (3<<BUT*2);
+  GPIOA->OTYPER &= ~(3<<BUT*2);
 } //End Init()
 
 //This function is the interrupt function.
 //This will happen every millisecond.
 void SysTick_Handler() {
   msTick++;
-  //TBC
+  if(butPress()) {
+    GPIOC_BSRR |= (1<< LED9);
+    while(butPress());
+    GPIOC_BRR |= (1<<LED9);
+  }
 } //End SysTick_Handler()
 
+uint32_t butPress() {
+  return (GPIOA->IDR & (1<<BUT));
+}
 
