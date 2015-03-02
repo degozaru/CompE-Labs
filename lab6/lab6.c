@@ -4,6 +4,8 @@
  * RedID815909699
  **************/
 
+/**Includes and declarations*************/
+/**                                    **/
 #include <STM32F0xx.h>
 
 #define LED8 8
@@ -11,16 +13,19 @@
 #define BUT 0
 
 //Variable declarations
-volatile uint32_t msTick = 0;
+Volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
 
 //Prototype functions
-void delay(uint32_t);
-void Init();
-void SysTick_Handler();
-uint32_t butPress();
-void delay(uint32_t);
+void Init();                    //Ln. 45
+void SysTick_Handler();         //Ln. 58
+uint32_t butPress();            //Ln. 70
+void delay(uint32_t);           //Ln. 75
+/**                                    **/
+/****************************************/
 
+/**Main**********************************/
+/**                                    **/
 int main(void) {
   //Initialize the system.
   Init();
@@ -32,7 +37,11 @@ int main(void) {
     delay(1000/blinkRate);
   }
 }
+/**                                    **/
+/****************************************/
 
+/**Functions******************************/
+/**                                    **/
 //This function will handle all initialization of the system.
 void Init() {
   /*Configure the interrupt to run every millisecond*/
@@ -58,12 +67,24 @@ void SysTick_Handler() {
   }
 } //End SysTick_Handler()
 
+//Returns 1 if button is pressed
 uint32_t butPress() {
   return (GPIOA->IDR & (1<<BUT));
-}
+} //End butPress()
 
+//This will delay by specified milliseconds
 void delay(uint32_t time) {
   time += msTick;
   while(msTick<=time);
   msTick=0;
 }
+/**                                    **/
+/****************************************/
+
+/**************
+ * That brain of mines
+ *  is something more than merely mortal
+ *    As time will show.
+ *  
+ *  Ada Lovelace
+ **************/
