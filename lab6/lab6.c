@@ -12,6 +12,7 @@
 
 //Variable declarations
 volatile uint32_t msTick = 0;
+uint32_t blinkRate=1;
 
 //Prototype functions
 void delay(uint32_t);
@@ -25,11 +26,10 @@ int main(void) {
   Init();
 
   while (1) {
-    //turn on GPIOC 8 (blue LED)
     GPIOC->BSRR |= (1<< LED8);
-    delay(1000);
-    //turn off GPIOC 8
+    delay(1000/blinkRate);
     GPIOC->BRR |= (1<< LED8);
+    delay(1000/blinkRate);
   }
 }
 
@@ -52,6 +52,7 @@ void SysTick_Handler() {
   msTick++;
   if(butPress()) {
     GPIOC->BSRR |= (1<< LED9);
+    (blinkRate<10)?blinkRate++ : blinkRate=1;
     while(butPress());
     GPIOC->BRR |= (1<<LED9);
   }
