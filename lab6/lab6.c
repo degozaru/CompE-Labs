@@ -12,12 +12,13 @@
 
 //Variable declarations
 volatile uint32_t msTick = 0;
-uint32_t delayTick = 0;
 
 //Prototype functions
 void delay(uint32_t);
 void Init();
 void SysTick_Handler();
+uint32_t butPress();
+void delay(uint32_t);
 
 int main(void) {
   //Initialize the system.
@@ -34,16 +35,13 @@ int main(void) {
 
 //This function will handle all initialization of the system.
 void Init() {
-  //Configure clock
+  /*Configure the interrupt to run every millisecond*/
   RCC->AHBENR |= (1<<17);
-
-  //Configure the interrupt to run every millisecond
   SysTick_Config(SystemCoreClock/1000);
-
-  //Configure 8th and 9th pin as output.
+  /*Configure 8th and 9th pin as output.*/
+  RCC->AHBENR |= (1<<19);
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
-
-  //Configure button as input, and no pull up
+  /*Configure button as input, and no pull up*/
   GPIOA->MODER &= (3<<BUT*2);
   GPIOA->OTYPER &= ~(3<<BUT*2);
 } //End Init()
@@ -53,9 +51,9 @@ void Init() {
 void SysTick_Handler() {
   msTick++;
   if(butPress()) {
-    GPIOC_BSRR |= (1<< LED9);
+    GPIOC->BSRR |= (1<< LED9);
     while(butPress());
-    GPIOC_BRR |= (1<<LED9);
+    GPIOC->BRR |= (1<<LED9);
   }
 } //End SysTick_Handler()
 
@@ -63,3 +61,8 @@ uint32_t butPress() {
   return (GPIOA->IDR & (1<<BUT));
 }
 
+void delay(uint32_t time) {
+  time += msTick;
+  while(msTick<=time);
+  msTick=0;
+}
