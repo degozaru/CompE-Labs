@@ -15,6 +15,7 @@
 //Variable declarations
 Volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
+uint32_t validPress=0;
 
 //Prototype functions
 void Init();                    //Ln. 45
@@ -58,9 +59,15 @@ void Init() {
 //This function is the interrupt function.
 //This will happen every millisecond.
 void SysTick_Handler() {
+  //Increase ms tick and debouncer tick.
   msTick++;
+  validPress--;
+
+  //This is what will happen when
+  //the button is pressed.
   if(butPress()) {
     GPIOC->BSRR |= (1<< LED9);
+    validPress=10;
     (blinkRate<10)?blinkRate++ : blinkRate=1;
     while(butPress());
     GPIOC->BRR |= (1<<LED9);
@@ -68,8 +75,9 @@ void SysTick_Handler() {
 } //End SysTick_Handler()
 
 //Returns 1 if button is pressed
+//Debouncing is included.
 uint32_t butPress() {
-  return (GPIOA->IDR & (1<<BUT));
+  return (GPIOA->IDR & (1<<BUT) && validPress<0);
 } //End butPress()
 
 //This will delay by specified milliseconds
