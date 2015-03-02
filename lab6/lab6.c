@@ -70,7 +70,7 @@ void SysTick_Handler() {
     GPIOC->BSRR |= (1<< LED9);
     /*Gives the button a 10 ms debounce*/
     validPress=10;
-    (blinkRate<10)?blinkRate++ : blinkRate=1;
+    (blinkRate==)?blinkRate=1 : blinkRate++;
     while(butPress());
     GPIOC->BRR |= (1<<LED9);
   }
