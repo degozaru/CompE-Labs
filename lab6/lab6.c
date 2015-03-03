@@ -63,9 +63,9 @@ void SysTick_Handler() {
   msTick++;
   validPress--;
 
-  //This is what will happen when
-  //the button is pressed.
-  //This includes a debouncer.
+  /*This is what will happen when
+   * the button is pressed.
+   * This includes a debouncer. */
   if(butPress() && validPress<0) {
     GPIOC->BSRR |= (1<< LED9);
     /*Gives the button a 10 ms debounce*/
