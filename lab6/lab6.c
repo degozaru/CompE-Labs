@@ -18,26 +18,32 @@ uint32_t blinkRate=1;
 int validPress=0;
 
 //Prototype functions
-void Init();                    //Ln. 45
-void SysTick_Handler();         //Ln. 58
-uint32_t butPress();            //Ln. 70
-void delay(uint32_t);           //Ln. 75
+void Init();                    //Ln. 50
+void SysTick_Handler();         //Ln. 65
+uint32_t butPress();            //Ln. 72
+void delay(uint32_t);           //Ln. 90
 /**                                    **/
 /****************************************/
 
 /**Main**********************************/
 /**                                    **/
 int main(void) {
-  //Initialize the system.
+  /*Initialize the system.*/
   Init();
 
+  /*This is the main function,
+   * which will turn the blue LED on
+   * and off, according to the current
+   * blinkRate. blinkRate is modified by
+   * the interrupt.
+   */
   while (1) {
     GPIOC->BSRR |= (1<< LED8);
     delay(1000/blinkRate);
     GPIOC->BRR |= (1<< LED8);
     delay(1000/blinkRate);
   }
-}
+} //End main()
 /**                                    **/
 /****************************************/
 
