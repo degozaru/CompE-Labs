@@ -63,9 +63,7 @@ int main(void)
       
       /*Reset the speed on the 6th cycle*/
       if(BlinkSpeed == 6)
-      {  
         BlinkSpeed = 1;
-      }
     
       /* Wait for the user to release the button*/
       while(STM_EVAL_PBGetState(BUTTON_USER)== SET)
@@ -75,7 +73,7 @@ int main(void)
       STM_EVAL_LEDOff(LED3);
     }
     
-    /*Cycle through*/
+    /*Cycle through the blinking*/
     STM_EVAL_LEDToggle(LED3);
     STM_EVAL_LEDToggle(LED4);
     Delay(1000/(BlinkSpeed*2));
