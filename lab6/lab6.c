@@ -8,16 +8,17 @@
 /**                                    **/
 #include <STM32F0xx.h>
 
-#define LED8 8
-#define LED9 9
-#define BUT 0
+/*Led and button usages*/
+#define LED8 8 //Blue Led
+#define LED9 9 //Green Led
+#define BUT 0  //Button
 
-//Variable declarations
+/*Variable declarations*/
 volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
 int validPress=0;
 
-//Prototype functions
+/*Prototype functions*/
 void Init();                    //Ln. 50
 void SysTick_Handler();         //Ln. 65
 uint32_t butPress();            //Ln. 72
@@ -39,9 +40,9 @@ int main(void) {
    */
   while (1) {
     GPIOC->BSRR |= (1<< LED8);
-    delay(1000/blinkRate);
+    delay(1000/(blinkRate*2));
     GPIOC->BRR |= (1<< LED8);
-    delay(1000/blinkRate);
+    delay(1000/(blinkRate*2));
   }
 } //End main()
 /**                                    **/
@@ -66,17 +67,19 @@ void Init() {
 //This will happen every millisecond.
 void SysTick_Handler() {
   /*Increase ms tick and debouncer tick.*/
-  msTick++;
+  msTick--;
   validPress--;
 
   /*This is what will happen when
    * the button is pressed.
    * This includes a debouncer. */
-  if(butPress() && validPress<0) {
+  if(butPress()) {
     GPIOC->BSRR |= (1<< LED9);
-    /*Gives the button a 10 ms debounce*/
-    validPress=10;
-    (blinkRate==10)?blinkRate=1 : blinkRate++;
+    if(validPress<0) {
+      (blinkRate==10)?blinkRate=1 : blinkRate++;
+      /*Gives the button a 10 ms debounce*/
+      validPress=10;
+    }
     while(butPress());
     GPIOC->BRR |= (1<<LED9);
   }
@@ -89,9 +92,8 @@ uint32_t butPress() {
 
 //This will delay by specified milliseconds
 void delay(uint32_t time) {
-  time += msTick;
-  while(msTick<=time);
-  msTick=0;
+  msTick = time;
+  while(msTick>0);
 } //End delay()
 /**                                    **/
 /****************************************/
