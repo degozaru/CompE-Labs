@@ -14,7 +14,7 @@
 #define BUT 0  //Button
 
 /*Variable declarations*/
-volatile uint32_t msTick = 0;
+volatile int32_t msTick = 0;
 uint32_t blinkRate=1;
 int validPress=0;
 
@@ -77,7 +77,7 @@ void SysTick_Handler() {
     GPIOC->BSRR |= (1<< LED9);
     if(validPress<0) {
       (blinkRate==10)?blinkRate=1 : blinkRate++;
-      /*Gives the button a 10 ms debounce*/
+      /*Gives the button a 7 ms debounce*/
       validPress=7;
     }
     while(butPress());
