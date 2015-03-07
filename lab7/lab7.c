@@ -59,7 +59,7 @@ void Init() {
   RCC->AHBENR |= (1<<19);
   /*Configure 8th and 9th pin as output.*/
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
-  GPIOC->MODER |= (0<<HEXPAD); //Not needed, but for completeness
+  GPIOC->MODER &= ~(0xff<<HEXPAD); //Not needed, but for completeness
 } //End Init()
 
 //This function is the interrupt function.
