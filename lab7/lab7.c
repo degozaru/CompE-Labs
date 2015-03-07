@@ -91,10 +91,8 @@ uint8_t butPress() {
   for(row=0; row<4; row++)
     if(GPIOC->IDR & (1<<(HEXPAD+row)))
       for(col=0; col<4; col++)
-        if(GPIOC->IDR & (1<<((HEXPAD+4)+col))) {
-          row++; col++;
+        if(GPIOC->IDR & (1<<((HEXPAD+4)+col))) 
           return (4*row)+col+1;
-        }
   return 0;
 
 } //End butPress()

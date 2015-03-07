@@ -33,3 +33,7 @@ We have to once again modify code to fit the program's specifications. See the d
 ###Lab 6
 
 This lab is our first embedded program from scratch. The included document provides the outline for the code. Additionally, debouncing is a problem in this lab. We are introduced to interrupts, debouncing, and system core clocks.
+
+###Lab 7
+
+This lab introduces outside interfacing by the way of a hexpad. We are to read, decide, and change the blinkrate of the led according to the input from the hexpad.
