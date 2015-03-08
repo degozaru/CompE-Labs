@@ -60,6 +60,7 @@ void Init() {
   /*Configure 8th and 9th pin as output.*/
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
   GPIOC->MODER &= ~(0xff<<HEXPAD); //Not needed, but for completeness
+  GPIOC->PUPDR |= (0x55<<HEXPAD);  //Set all buttons to pull-up
 } //End Init()
 
 //This function is the interrupt function.
@@ -76,8 +77,7 @@ void SysTick_Handler() {
     GPIOC->BSRR |= (1<< LED9);
     if(validPress<0) {
       blinkRate = butPress();
-      /*Gives the button a 7 ms debounce*/
-      validPress=7;
+      validPress=7; //7ms debounce
     }
     while(butPress());
     GPIOC->BRR |= (1<<LED9);
