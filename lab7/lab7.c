@@ -17,6 +17,7 @@
 volatile uint32_t msTick = 0;
 uint32_t blinkRate=1;
 int validPress=0;
+int row, col;
 
 /*Prototype functions*/
 void Init();                    //Ln. 51
