@@ -15,7 +15,7 @@
 
 /*Variable declarations*/
 volatile int32_t msTick = 0;
-uint32_t blinkRate=1;
+uint8_t blinkRate=1;
 int validPress=0;
 int row, col;
 
@@ -91,12 +91,15 @@ void SysTick_Handler() {
 //Scancode: 4(row) + col + 1
 //returns 0 if nothing is pressed
 uint8_t butPress() {
-  for(col=0; col<4; col++) {
-    GPIOC->BSRR |= (1<<(HEXPAD+col));
-    for(row=0; row<4; row++)
-      if(GPIOC->IDR & (1<<((HEXPAD+4)+row))) 
-        return (4*row)+col+1;
-    GPIOC->BRR |= (1<<(HEXPAD+col));
+	GPIOC->BSRR |= (0xf<<(HEXPAD));
+  for(row=0; row<4; row++) {
+    GPIOC->BRR |= (1<<(HEXPAD+row));
+    for(col=0; col<4; col++)
+      if(~GPIOC->IDR & (1<<((HEXPAD+4)+col))) {
+        GPIOC->BSRR |= (1<<(HEXPAD+row));
+				return (row*4)+col+1;
+			}
+    GPIOC->BSRR |= (1<<(HEXPAD+row));
   }
   return 0;
 } //End butPress()
