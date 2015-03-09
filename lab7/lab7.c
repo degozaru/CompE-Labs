@@ -14,7 +14,7 @@
 #define HEXPAD 0
 
 /*Variable declarations*/
-volatile uint32_t msTick = 0;
+volatile int32_t msTick = 0;
 uint32_t blinkRate=1;
 int validPress=0;
 int row, col;
