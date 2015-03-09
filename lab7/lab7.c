@@ -20,10 +20,10 @@ int validPress=0;
 int row, col;
 
 /*Prototype functions*/
-void Init();                    //Ln. 51
-void SysTick_Handler();         //Ln. 65
-uint8_t butPress();             //Ln. 87
-void delay(uint32_t);           //Ln. 102
+void Init();                    //Ln. 54
+void SysTick_Handler();         //Ln. 69
+uint8_t butPress();             //Ln. 90
+void delay(uint32_t);           //Ln. 107
 /**                                    **/
 /****************************************/
 
