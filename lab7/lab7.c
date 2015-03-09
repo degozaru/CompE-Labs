@@ -58,10 +58,12 @@ void Init() {
 
   /*Clock enable port C*/
   RCC->AHBENR |= (1<<19);
-  /*Configure 8th and 9th pin as output.*/
+  /*Configure 8th and 9th pin as output.
+   * Set fist 4 pins to output
+   * Set last 4 pins as pullup (input by default)*/
   GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
-  GPIOC->MODER &= ~(0xff<<HEXPAD); //Not needed, but for completeness
-  GPIOC->PUPDR |= (0x55<<HEXPAD);  //Set all buttons to pull-up
+  GPIOC->MODER |= (0x55<<HEXPAD); 
+  GPIOC->PUPDR |= (0x55<<(HEXPAD+4)*2);
 } //End Init()
 
 //This function is the interrupt function.
@@ -89,13 +91,14 @@ void SysTick_Handler() {
 //Scancode: 4(row) + col + 1
 //returns 0 if nothing is pressed
 uint8_t butPress() {
-  for(row=0; row<4; row++)
-    if(GPIOC->IDR & (1<<(HEXPAD+row)))
-      for(col=0; col<4; col++)
-        if(GPIOC->IDR & (1<<((HEXPAD+4)+col))) 
-          return (4*row)+col+1;
+  for(col=0; col<4; col++) {
+    GPIOC->BSRR |= (1<<(HEXPAD+col));
+    for(row=0; row<4; row++)
+      if(GPIOC->IDR & (1<<((HEXPAD+4)+row))) 
+        return (4*row)+col+1;
+    GPIOC->BRR |= (1<<(HEXPAD+col));
+  }
   return 0;
-
 } //End butPress()
 
 //This will delay by specified milliseconds
