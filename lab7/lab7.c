@@ -97,7 +97,7 @@ uint8_t butPress() {
     for(col=0; col<4; col++)
       if(~GPIOC->IDR & (1<<((HEXPAD+4)+col))) {
         GPIOC->BSRR |= (1<<(HEXPAD+row));
-	return (row*4)+col+1;
+        return (row*4)+col+1;
       }
     GPIOC->BSRR |= (1<<(HEXPAD+row));
   }
