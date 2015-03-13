@@ -92,7 +92,7 @@ void SysTick_Handler() {
 //returns 0 if nothing is pressed
 uint8_t butPress() {
 	GPIOC->BSRR |= (0xf<<(HEXPAD));
-  for(row=0; row<4; row++) {
+	for(row=0; row<4; row++) {
     GPIOC->BRR |= (1<<(HEXPAD+row));
     for(col=0; col<4; col++)
       if(~GPIOC->IDR & (1<<((HEXPAD+4)+col))) {
