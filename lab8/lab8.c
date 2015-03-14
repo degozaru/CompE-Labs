@@ -12,6 +12,7 @@
 #define LED8 8 //Blue Led
 #define LED9 9 //Green Led
 #define HEXPAD 0
+#define SPEAKER 8
 
 /*Variable declarations*/
 volatile int32_t msTick = 0;
