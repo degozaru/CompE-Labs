@@ -37,3 +37,7 @@ This lab is our first embedded program from scratch. The included document provi
 ###Lab 7
 
 This lab introduces outside interfacing by the way of a hexpad. We are to read, decide, and change the blinkrate of the led according to the input from the hexpad.
+
+###Lab 8
+
+This lab introduces the speaker as an output. We are to configure the speaker to operate as specified by the document. More specifically, one speaker should maintain a 50% duty cycle, while another will maintain a 70% duty cycle.
