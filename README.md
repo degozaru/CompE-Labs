@@ -40,4 +40,4 @@ This lab introduces outside interfacing by the way of a hexpad. We are to read, 
 
 ###Lab 8
 
-This lab introduces the speaker as an output. We are to configure the speaker to operate as specified by the document. More specifically, one speaker should maintain a 50% duty cycle, while another will maintain a 70% duty cycle.
+This lab introduces the speaker as an output. We are to configure the speaker to operate as specified by the document. More specifically, one speaker should maintain a 50% duty cycle, while another will maintain a 10% duty cycle.
