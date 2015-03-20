@@ -58,9 +58,9 @@ void Init() {
 	/*Clock init*/
 	RCC->APB2ENR |= (1<<11);
 	TIM1->PSC = 0;
-	TIM1->CCER |= (0x5<<0);
+	TIM1->CCER |= (0x55<<0);
 	TIM1->CCMR1 |= (0x60);
-	TIM1->CCMR1 |= (0x60 << 8); 
+	TIM1->CCMR1 |= (0x60 << 8); ; 
 	TIM1->BDTR |= (1<<15);
 } //End Init()
 
@@ -84,5 +84,6 @@ uint8_t butPress() {
 /****************************************/
 
 /**************
- *
+ * I don't trust words
+ * I Trust actions.
  **************/
