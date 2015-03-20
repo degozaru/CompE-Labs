@@ -33,8 +33,9 @@ int main(void) {
       TIM1->ARR = period;
       TIM1->CCR1 = (50 * period / 100);
       TIM1->CCR2 = (10 * period / 100);
+      TIM1->CR1 |= (1<<0);
     }
-    else {/*Clock Disable here*/}
+    else TIM1->CR1 &= ~(1<<0);
   }
 } //End main()
 /**                                    **/
@@ -60,6 +61,7 @@ void Init() {
 	TIM1->CCER |= (0x5<<0);
 	TIM1->CCMR1 |= (0x60);
 	TIM1->CCMR1 |= (0x60 << 8); 
+	TIM1->BDTR |= (1<<15);
 } //End Init()
 
 //Returns the scancode if button is pressed
