@@ -30,12 +30,11 @@ int main(void) {
   while(666) {
     if(butPress()) {
       period = (SystemCoreClock / (50*butPress())) - 1;
-      TIM1->ARR = period
+      TIM1->ARR = period;
       TIM1->CCR1 = (50 * period / 100);
       TIM1->CCR2 = (10 * period / 100);
-      RCC->AHBENR |= (1<<17);
     }
-    else RCC->APB2ENR &= ~(1<<11);
+    else {/*Clock Disable here*/}
   }
 } //End main()
 /**                                    **/
@@ -54,6 +53,13 @@ void Init() {
   RCC->AHBENR |= (1<<17);
   GPIOA->MODER |= (0xA<<SPEAKER);
   GPIOA->AFR[1] |= (0x22);
+
+	/*Clock init*/
+	RCC->APB2ENR |= (1<<11);
+	TIM1->PSC = 0;
+	TIM1->CCER |= (0x5<<0);
+	TIM1->CCMR1 |= (0x60);
+	TIM1->CCMR1 |= (0x60 << 8); 
 } //End Init()
 
 //Returns the scancode if button is pressed
@@ -76,7 +82,5 @@ uint8_t butPress() {
 /****************************************/
 
 /**************
- * Your code is shit
- *  Your argument is shit
- *  -Linus Torvalds
+ *
  **************/
