@@ -29,7 +29,7 @@ int main(void) {
   Init();
   while(666) {
     if(butPress()) {
-      period = (SystemCoreClock / (50*butPress())) - 1;
+      period = ((SystemCoreClock/48) / (50*butPress())) - 1;
       TIM1->ARR = period;
       TIM1->CCR1 = (50 * period / 100);
       TIM1->CCR2 = (10 * period / 100);
@@ -57,7 +57,7 @@ void Init() {
 
 	/*Clock init*/
 	RCC->APB2ENR |= (1<<11);
-	TIM1->PSC = 0;
+	TIM1->PSC = 48;
 	TIM1->CCER |= (0x55<<0);
 	TIM1->CCMR1 |= (0x60);
 	TIM1->CCMR1 |= (0x60 << 8); ; 
