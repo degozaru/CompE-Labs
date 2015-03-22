@@ -18,7 +18,7 @@ uint16_t period;
 
 /*Prototype functions*/
 void Init();                    //Ln. 46
-uint8_t butPress();             //Ln. 59
+uint8_t butPress();             //Ln. 67
 /**                                    **/
 /****************************************/
 
