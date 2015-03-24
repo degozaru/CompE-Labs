@@ -114,3 +114,39 @@ uint8_t butPress() {
 /**                                                             **/
 /*****************************************************************/
 
+/**SPEAKER FUNCTIONS**********************************************/
+/**                                                             **/
+/*This enables the speaker for PWM output.
+ * Assuming a clock of 48 MHz:
+ * One tick is prescaled by 48, making it 1MHz,
+ * Port A's clock must be enabled.
+ * Pins PA8 and PA9 are used for PWM output */
+void initSpeaker() {
+	RCC->APB2ENR |= (1<<11);
+	TIM1->PSC = 48;
+	TIM1->CCER |= (0x55<<0);
+	TIM1->CCMR1 |= (0x60);
+	TIM1->CCMR1 |= (0x60<<8);
+	TIM1->BDTR |= (1<<15);
+  
+  GPIOA->MODER |= (0xA<<SPEAKER);
+  GPIOA->AFR[1] |= (0x22);
+} //End initSpeaker()
+
+/*Turns on the speaker with the specified period,
+ * compare1 goes to CCR1
+ * compare2 goes to CCR2 */
+void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2) {
+  TIM1->ARR = period;
+  TIM1->CCR1 = compare1;
+  TIM1->CCR2 = compare2;
+  TIM1->CR1 |= ~(1<<0);
+} //End speakerOn()
+
+/*Turns off the speaker*/
+void speakerOff() {
+  TIM1->CR1 &= ~(1<<0);
+} //End speakerOff()
+/**                                                             **/
+/*****************************************************************/
+

@@ -15,15 +15,25 @@
 #define OUTPUT          1
 #define ALTMODE         2
 
+/*Bit address for hardware*/
+#define HEXPAD          0
+#define SPEAKER         16
+
 /*Basic port/GPIO functions*/
 void portEnable(char port);
 void pinHigh(char port, int pin);
 void pinLow(char port, int pin);
 void initPin(char port, int pin, int mode);
 
-/*Init hexpad*/
+/*Hexpad*/
 void initHex();
 uint8_t butPress();
+
+/*Speakers*/
+void initSpeaker();
+void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2);
+void speakerOff();
+
 #endif
 
 
