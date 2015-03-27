@@ -87,10 +87,8 @@ void initPin(char port, int pin, int mode) {
  * note that port C must be enabled before
  * the hexpad will work.*/
 void initHex() {
-  /*Configure 8th and 9th pin as output.
-   * Set fist 4 pins to output
+   /* Set fist 4 pins to output
    * Set last 4 pins as pullup (input by default)*/
-  GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
   GPIOC->MODER |= (0x55<<HEXPAD); 
   GPIOC->PUPDR |= (0x55<<(HEXPAD+4)*2);
 } //End initHex()

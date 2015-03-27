@@ -26,6 +26,7 @@ void pinLow(char port, int pin);
 void initPin(char port, int pin, int mode);
 
 /*Hexpad*/
+int row, col;
 void initHex();
 uint8_t butPress();
 
