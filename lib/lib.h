@@ -8,7 +8,8 @@
  * It will be added onto as time goes on.
  * ***************************/
 #ifndef LIBRARY_H
-#define LIBRARY_H 
+#define LIBRARY_H
+#include <STM32F0xx.h>
 
 /*Pin mode definitions*/
 #define INPUT           0
@@ -26,7 +27,6 @@ void pinLow(char port, int pin);
 void initPin(char port, int pin, int mode);
 
 /*Hexpad*/
-int row, col;
 void initHex();
 uint8_t butPress();
 
@@ -36,6 +36,5 @@ void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2);
 void speakerOff();
 
 #endif
-
 
 
