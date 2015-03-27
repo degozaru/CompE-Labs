@@ -1,3 +1,4 @@
+
 #include "lib.h"
 
 /**General Function***********************************************/
@@ -22,9 +23,6 @@ void pinHigh(char port, int pin) {
     case 'D':
       GPIOD->BSRR |= (1<<pin);
       break;
-    case 'E':
-      GPIOE->BSRR |= (1<<pin);
-      break;
     case 'F':
       GPIOF->BSRR |= (1<<pin);
       break;
@@ -45,9 +43,6 @@ void pinLow(char port, int pin) {
       break;
     case 'D':
       GPIOD->BRR |= (1<<pin);
-      break;
-    case 'E':
-      GPIOE->BRR |= (1<<pin);
       break;
     case 'F':
       GPIOF->BRR |= (1<<pin);
@@ -70,9 +65,6 @@ void initPin(char port, int pin, int mode) {
     case 'D':
       GPIOD->MODER |= (mode<<pin*2);
       break;
-    case 'E':
-      GPIOE->MODER |= (mode<<pin*2);
-      break;
     case 'F':
       GPIOF->MODER |= (mode<<pin*2);
       break;
@@ -86,6 +78,7 @@ void initPin(char port, int pin, int mode) {
 /*This will initialize the hexpad for use.
  * note that port C must be enabled before
  * the hexpad will work.*/
+int row, col = 0;
 void initHex() {
    /* Set fist 4 pins to output
    * Set last 4 pins as pullup (input by default)*/
@@ -134,11 +127,12 @@ void initSpeaker() {
 /*Turns on the speaker with the specified period,
  * compare1 goes to CCR1
  * compare2 goes to CCR2 */
-void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2) {
-  TIM1->ARR = period;
-  TIM1->CCR1 = compare1;
-  TIM1->CCR2 = compare2;
-  TIM1->CR1 |= ~(1<<0);
+void speakerOn(uint16_t period, uint16_t duty1, uint16_t duty2) {
+     period = ((SystemCoreClock/48) / (period)) - 1;
+     TIM1->ARR = period;
+     TIM1->CCR1 = (duty1 * period / 100);
+     TIM1->CCR2 = (duty2 * period / 100);
+     TIM1->CR1 |= (1<<0);
 } //End speakerOn()
 
 /*Turns off the speaker*/
@@ -147,4 +141,3 @@ void speakerOff() {
 } //End speakerOff()
 /**                                                             **/
 /*****************************************************************/
-
