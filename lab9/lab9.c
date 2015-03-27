@@ -11,10 +11,10 @@
 #include "lib.h"
 
 int debounce = 0;
+int newNote, pressedNum;
 int scancode, note;
 int startKey = 60;
 float frequency;
-int newNote, pressedNum;
 
 void init();
 int updateNotes();
@@ -75,7 +75,7 @@ int getNum() {
   while(scancode>12||scancode%4==0) {
     scancode = butPress();
     if(scancode==15) return -1;
-    if(scancode==14) return 0;
+    if(scancode==14) return -2;
   }
   return scancode-(scancode/4);
 } //End getNum()
@@ -97,5 +97,4 @@ void SysTick_Handler() {
 } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
-
 
