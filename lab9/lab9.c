@@ -14,6 +14,7 @@ int debounce = 0;
 int scancode, note;
 int startKey = 60;
 float frequency;
+int newNote, pressedNum;
 
 void init();
 int updateNotes();
@@ -56,24 +57,25 @@ void init() {
 /**Functions****************************/
 /**                                   **/
 int updateNotes() {
+  newNote=0;
   pinHigh('C', 8);
-  while(666)
-    if(getNum() && debounce<=0) {
-      if(getNum()==-1) {
-        pinLow('C', 8);
-        return 0;
-      }
+  while(666) {
+    if(butPress()&&debounce<=0) {
+      pressedNum = getNum();
+      if(pressedNum==-1) break;
+      else newNote = (newNote*10) + pressedNum;
       debounce = 7;
-      break;
-    }   
-  return ((getNum()==-2)?0:getNum()) + (updateNotes()*10);
+    }
+  }
+  pinLow('C', 8);
+  return newNote;
 } //End updateNotes()
 
 int getNum() {
   while(scancode>12||scancode%4==0) {
     scancode = butPress();
     if(scancode==15) return -1;
-    if(scancode==14) return -2;
+    if(scancode==14) return 0;
   }
   return scancode-(scancode/4);
 } //End getNum()
