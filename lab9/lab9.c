@@ -13,7 +13,7 @@
 int debounce = 0;
 int scancode, note;
 int startKey = 60;
-int frequency;
+float frequency;
 
 void init();
 int updateNotes();
@@ -25,12 +25,15 @@ void SysTick_Handler();
 
 /**Main Function************************/
 /**                                   **/
-void main() {
+int main() {
   init();
   while(666) {
     scancode = butPress();
     if(scancode==8) startKey = updateNotes();
-    else if(scancode) playNote(scancode);
+    else if(scancode) { 
+			playNote(scancode);
+			while(butPress()==scancode);
+		}
     else speakerOff(); 
   }
 }
@@ -72,14 +75,14 @@ int getNum() {
     if(scancode==15) return -1;
     if(scancode==14) return -2;
   }
-  return scancode-(scancode/4)
+  return scancode-(scancode/4);
 } //End getNum()
 
 void playNote(int scan) {
   (scan>8)?scan-=2:scan--;
   note = startKey + (scan*2);
-  frequency = pow(2.0, (note-69)/12) * 440;
-  speakerOn(frequency, frequency/2, frequency/2);
+  frequency = pow(2.0, ((float)note-69.0)/12.0) * 440.0;
+  speakerOn(frequency, 50, 50);
 } //End playNote()
 /**                                   **/
 /***************************************/
@@ -92,6 +95,5 @@ void SysTick_Handler() {
 } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
-
 
 
