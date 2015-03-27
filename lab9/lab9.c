@@ -10,9 +10,9 @@
 #include <math.h>
 #include "lib.h"
 
-int debounce = 0;
+int scancode=0;
+int64_t debounce = 0;
 int newNote, pressedNum;
-int scancode, note;
 int startKey = 60;
 float frequency;
 
@@ -31,11 +31,11 @@ int main() {
   while(666) {
     scancode = butPress();
     if(scancode==8) startKey = updateNotes();
-    else if(scancode) { 
+    else if(butPress() && scancode) { 
 			playNote(scancode);
 			while(butPress()==scancode);
 		}
-    else speakerOff(); 
+		else speakerOff(); 
   }
 }
 /**                                   **/
@@ -71,21 +71,22 @@ int updateNotes() {
   return newNote;
 } //End updateNotes()
 
+void playNote(int scan) {
+  (scan>8)?scan-=2:scan--;
+  frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
+  speakerOn(frequency, 50, 50);
+} //End playNote()
+
 int getNum() {
+	scancode= butPress();
   while(scancode>12||scancode%4==0) {
     scancode = butPress();
     if(scancode==15) return -1;
-    if(scancode==14) return -2;
+    if(scancode==14) return 0;
   }
   return scancode-(scancode/4);
 } //End getNum()
 
-void playNote(int scan) {
-  (scan>8)?scan-=2:scan--;
-  note = startKey + (scan*2);
-  frequency = pow(2.0, ((float)note-69.0)/12.0) * 440.0;
-  speakerOn(frequency, 50, 50);
-} //End playNote()
 /**                                   **/
 /***************************************/
 
