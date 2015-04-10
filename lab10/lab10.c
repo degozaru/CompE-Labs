@@ -17,6 +17,7 @@
 int debounce = 0;
 int isOn = 1;
 int time = 0;
+uint16_t freq = 0;
 
 void init();
 void delay(int ms);
@@ -31,7 +32,8 @@ int main() {
 
   while(666) {
     if(isOn) {
-      speakerOn(ADC1->DR, 50, 50);
+			freq = ADC1->DR * .25;
+      speakerOn(freq, 50, 50);
       START_CONV;
       delay(2);
     }
