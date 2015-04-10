@@ -1,10 +1,10 @@
 /**************
- * Spring 2015 Lab 9
+ * Spring 2015 Lab 10
  * Vincent Chan
  * RedID815909699
  **************/
 
-/**Includes and declarations************/
+/**DECLARATIONS*************************/
 /**                                   **/
 #include <STM32F0xx.h>
 #include <math.h>
@@ -20,7 +20,11 @@ int time = 0;
 
 void init();
 void delay(int ms);
+/**                                   **/
+/***************************************/
 
+/**Main*********************************/
+/**                                   **/
 int main() {
   init();
   START_CONV;
@@ -34,7 +38,12 @@ int main() {
     else speakerOff();
   }
 }
+/**                                   **/
+/***************************************/
 
+/**FUNCTIONS****************************/
+/**                                   **/
+/* Initalize the system. To be run on startup */
 void init() {
   portEnable('A');
 
@@ -54,11 +63,18 @@ void init() {
   ADC1->CHSELR |= (1<<1);
 } //End init()
 
+/* Delays by the specified millisecond count */
 void delay(int ms) {
   time = ms;
   while(time>0);
 } //End delay()
+/**                                   **/
+/***************************************/
 
+/**INTERRUPT****************************/
+/**                                   **/
+/* The interrupt handles debouncing
+ * and delay countdowns */
 void SysTick_Handler() {
   if(BUTPRESS) {
     if(debounce<=0) isOn^=1;
@@ -67,4 +83,12 @@ void SysTick_Handler() {
   else debounce--;
   time--;
 } //End SysTick_Handler()  
+/**                                   **/
+/***************************************/
 
+/********************************
+ * WE REJECT:
+ *  Kings, presidents, and voting.
+ * WE BELIEVE IN:
+ *  Rough consensus and running code.
+ *  *  *  *  *  *  *  *  *  *  */
