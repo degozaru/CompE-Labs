@@ -15,6 +15,7 @@
 #define INPUT           0
 #define OUTPUT          1
 #define ALTMODE         2
+#define ANALOG          3
 
 /*Bit address for hardware*/
 #define HEXPAD          0
