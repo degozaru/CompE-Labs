@@ -11,7 +11,7 @@
 #include "lib.h" 
 
 #define START_CONV      ADC1->CR |= (1<<2);
-#define CONVERTING      ADC1->CR &  (1<<2);
+#define CONVERTING      ADC1->CR &  (1<<2)
 #define BUTPRESS        GPIOA->IDR & (1<<0)
 
 int debounce = 0;
