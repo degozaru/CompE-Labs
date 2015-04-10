@@ -1,96 +1,38 @@
-/**************
- * Spring 2015 Lab 10
- * Vincent Chan
- * RedID815909699
- **************/
-
-/**DECLARATIONS*************************/
-/**                                   **/
+/****************************
+ * CompE375 Spring 2015
+ * Library
+ *
+ * By Vincent Chan
+ *
+ * This is a library that will consolidate all config.
+ * It will be added onto as time goes on.
+ * ***************************/
+#ifndef LIBRARY_H
+#define LIBRARY_H
 #include <STM32F0xx.h>
-#include <math.h>
-#include "lib.h" 
 
-#define START_CONV      ADC1->CR |= (1<<2);
-#define CONVERTING      ADC1->CR &  (1<<2);
-#define BUTPRESS        GPIOA->IDR & (1<<0)
+/*Pin mode definitions*/
+#define INPUT           0
+#define OUTPUT          1
+#define ALTMODE         2
 
-int debounce = 0;
-int isOn = 1;
-int time = 0;
-uint16_t freq = 0;
+/*Bit address for hardware*/
+#define HEXPAD          0
+#define SPEAKER         16
 
-void init();
-void delay(int ms);
-/**                                   **/
-/***************************************/
+/*Basic port/GPIO functions*/
+void portEnable(char port);
+void pinHigh(char port, int pin);
+void pinLow(char port, int pin);
+void initPin(char port, int pin, int mode);
 
-/**Main*********************************/
-/**                                   **/
-int main() {
-  init();
-  START_CONV;
+/*Hexpad*/
+void initHex();
+uint8_t butPress();
 
-  while(666) {
-    if(isOn) {
-			freq = ADC1->DR * .25;
-      speakerOn(freq, 50, 50);
-      START_CONV;
-      delay(2);
-    }
-    else speakerOff();
-  }
-}
-/**                                   **/
-/***************************************/
+/*Speakers*/
+void initSpeaker();
+void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2);
+void speakerOff();
 
-/**FUNCTIONS****************************/
-/**                                   **/
-/* Initalize the system. To be run on startup */
-void init() {
-  portEnable('A');
-
-  /* Enable input pin, and button press */
-  initPin('A', 1, ANALOG);
-  initPin('A', 0, INPUT);
-
-  /* Enable speaker */
-  initSpeaker();
-  
-  /* Enable interrupt */
-  SysTick_Config(SystemCoreClock/1000);
-  
-  /* ADC enable */
-  RCC->APB2ENR |= (1<<9);
-  ADC1->CR |= (1<<0);
-  ADC1->CHSELR |= (1<<1);
-} //End init()
-
-/* Delays by the specified millisecond count */
-void delay(int ms) {
-  time = ms;
-  while(time>0);
-} //End delay()
-/**                                   **/
-/***************************************/
-
-/**INTERRUPT****************************/
-/**                                   **/
-/* The interrupt handles debouncing
- * and delay countdowns */
-void SysTick_Handler() {
-  if(BUTPRESS) {
-    if(debounce<=0) isOn^=1;
-    debounce = 7;
-  }
-  else debounce--;
-  time--;
-} //End SysTick_Handler()  
-/**                                   **/
-/***************************************/
-
-/********************************
- * WE REJECT:
- *  Kings, presidents, and voting.
- * WE BELIEVE IN:
- *  Rough consensus and running code.
- *  *  *  *  *  *  *  *  *  *  */
+#endif
