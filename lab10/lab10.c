@@ -32,8 +32,8 @@ int main() {
 
   while(666) {
     if(isOn) {
-    	while(CONVERTING);
-    	freq = ADC1->DR * .25;
+      while(CONVERTING);
+      freq = ADC1->DR * .25;
       speakerOn(freq, 50, 50);
       START_CONV;
       delay(2);
