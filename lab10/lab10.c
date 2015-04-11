@@ -18,6 +18,7 @@ int debounce = 0;
 int isOn = 1;
 int time = 0;
 uint16_t freq = 0;
+uint16_t cnt = 0;
 
 void init();
 void delay(int ms);
@@ -34,7 +35,7 @@ int main() {
     if(isOn) {
       while(CONVERTING);
       freq = (ADC1->DR * .49) + 100; //Scaling to be 100 - 2000 Hz
-			while(TIM1->CNT > 0x0500);
+			while(TIM1->CNT > (TIM1->ARR*.80));
       speakerOn(freq, 50, 50);
 			delay(15);
       START_CONV;
