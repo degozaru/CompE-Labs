@@ -34,9 +34,10 @@ int main() {
   while(666) {
     if(isOn) {
       while(CONVERTING);
-      freq = (ADC1->DR * .49) + 100; //Scaling to be 100 - 2000 Hz
-			while(TIM1->CNT > (TIM1->ARR*.80));
+      freq = (ADC1->DR * .59) + 100; //Scaling to be 100 - 2000 Hz
+			
       speakerOn(freq, 50, 50);
+			
 			delay(15);
       START_CONV;
       
