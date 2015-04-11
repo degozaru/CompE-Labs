@@ -41,7 +41,7 @@ int main() {
       START_CONV;
       
     }
-    else speakerOff();
+    else speakerOn(freq, 0, 0);
   }
 }
 /**                                   **/
