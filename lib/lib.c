@@ -127,9 +127,10 @@ void initSpeaker() {
  * compare1 goes to CCR1
  * compare2 goes to CCR2 */
 void speakerOn(uint16_t period, uint16_t duty1, uint16_t duty2) {
-     period = ((SystemCoreClock/48) / (period)) - 1;
+			period = ((SystemCoreClock/48) / (period)) - 1;
+	while((TIM1->ARR) - (TIM1->CNT) < 125);
      TIM1->ARR = period;
-     TIM1->CCR1 = (duty1 * period / 100);
+	TIM1->CCR1 = (duty1 * period / 100);
      TIM1->CCR2 = (duty2 * period / 100);
      TIM1->CR1 |= (1<<0);
 } //End speakerOn()
