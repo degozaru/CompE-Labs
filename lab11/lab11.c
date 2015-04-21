@@ -10,7 +10,7 @@
 #include <math.h>
 #include "lib.h" 
 
- int buf[25] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
+int buf[25] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
                   0x74, 0x20, 0x43, 0x68, 0x61, 0x6E};
 int size = 11;
 int i;
@@ -23,15 +23,20 @@ void init();
 /**                                   **/
 int main() {
   init();
-	USART1->TDR = 0x56;
+  USART1->TDR = 0x56;
+  
   while(666) {
+/* Print the next char, if any are in the print buffer */
     if(size)
       if(putChar(buf[0])){
         for(i=0; i<size-1; i++) {
           buf[i] = buf[i+1];
-				}
-				size--;
-			}
+        }
+        size--;
+      	
+      }
+      
+/* Attempt to pull a character off the read buffer */
     buf[size] = getChar();
     if(buf[size]!=0xFF) {
       if(buf[size]>0x60 && buf[size]<0x7B)
@@ -43,8 +48,8 @@ int main() {
       }
       size++;
     }
-	}
-}                 
+  }
+} //End main()               
 /**                                   **/
 /***************************************/
 
