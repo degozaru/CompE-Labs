@@ -36,4 +36,9 @@ void initSpeaker();
 void speakerOn(uint16_t period, uint16_t compare1, uint16_t compare2);
 void speakerOff();
 
+/*USART comms*/
+void serialStart(uint16_t baud);
+uint8_t getChar();
+int putChar(uint8_t txChar);
+
 #endif

@@ -41,3 +41,15 @@ This lab introduces outside interfacing by the way of a hexpad. We are to read, 
 ###Lab 8
 
 This lab introduces the speaker as an output. We are to configure the speaker to operate as specified by the document. More specifically, one speaker should maintain a 50% duty cycle, while another will maintain a 10% duty cycle.
+
+###Lab 9
+
+This lab involves creating a midi keypad. Functionality is included in the document provided.
+
+###Lab 10
+
+This lab involves creating a photosensitive theremin, and introduces us to the concept of an ADC conversion.
+
+###Lab 11
+
+This lab involves serial communications with the computer. We are using a Sparkfun FT232R breakout board.

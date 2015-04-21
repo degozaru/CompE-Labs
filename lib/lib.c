@@ -118,7 +118,6 @@ void initSpeaker() {
 	TIM1->CCMR1 |= (0x60);
 	TIM1->CCMR1 |= (0x60<<8);
 	TIM1->BDTR |= (1<<15);
-  
   GPIOA->MODER |= (0xA<<SPEAKER);
   GPIOA->AFR[1] |= (0x22);
 } //End initSpeaker()
@@ -127,17 +126,48 @@ void initSpeaker() {
  * compare1 goes to CCR1
  * compare2 goes to CCR2 */
 void speakerOn(uint16_t period, uint16_t duty1, uint16_t duty2) {
-			period = ((SystemCoreClock/48) / (period)) - 1;
-	while((TIM1->ARR) - (TIM1->CNT) < 125);
-     TIM1->ARR = period;
-	TIM1->CCR1 = (duty1 * period / 100);
-     TIM1->CCR2 = (duty2 * period / 100);
-     TIM1->CR1 |= (1<<0);
+  period = ((SystemCoreClock/48) / (period)) - 1;
+  TIM1->ARR = period;
+  TIM1->CCR1 = (duty1 * period / 100);
+  TIM1->CCR2 = (duty2 * period / 100);
+  TIM1->CR1 |= (1<<0);
 } //End speakerOn()
 
 /*Turns off the speaker*/
 void speakerOff() {
   TIM1->CR1 &= ~(1<<0);
 } //End speakerOff()
+/**                                                             **/
+/*****************************************************************/
+
+/**USART COMMS****************************************************/
+/**                                                             **/
+/*This enables the USART. The settings set the buad rate to
+ * the int argument passed */
+void serialStart(uint16_t baud) {
+  RCC->APB2ENR |= (1<<14); 
+  initPin('A', 9, ALTMODE);     //TX pin
+  initPin('A', 10, ALTMODE);    //RX pin
+  GPIOAA->AFR[1] |= (0x11<<4);
+  baud = SystemCoreClock/baud;
+  USART1->BRR = baud;
+  USART1->CR1 |= 0xD;
+} //End serialStart();
+
+/* Returns the char currently in the recieve port.
+ * returns 0xFF if there is no char in rx port*/
+uint8_t getChar() {
+  if(USART1->ISR & (1<<5)) return USART1->RDR;
+  return 0xFF;
+} //End getChar()
+
+/* Sends char to transmit port.
+ * returns 1 on successful transmit.
+ * returns 0 on failed transmit. */
+int putChar(uint8_t txChar) {
+  if(~(USART1->ISR & (1<<7))) return 0;
+  USART1->TDR = txChar;
+  return 1;
+} //End putChar()
 /**                                                             **/
 /*****************************************************************/
