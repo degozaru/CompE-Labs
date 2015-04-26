@@ -1,64 +1,107 @@
 /**************
- * Spring 2015 Lab 11
+ * Spring 2015 Lab 6
  * Vincent Chan
  * RedID815909699
  **************/
 
-/**DECLARATIONS*************************/
-/**                                   **/
+/**Includes and declarations*************/
+/**                                    **/
 #include <STM32F0xx.h>
-#include <math.h>
-#include "lib.h" 
 
- int buf[25] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
-                  0x74, 0x20, 0x43, 0x68, 0x61, 0x6E};
-int size = 11;
-int i;
+/*Led and button usages*/
+#define LED8 8 //Blue Led
+#define LED9 9 //Green Led
+#define BUT 0  //Button
 
-void init();
-/**                                   **/
-/***************************************/
+/*Variable declarations*/
+volatile int32_t msTick = 0;
+uint32_t blinkRate=1;
+int validPress=0;
 
-/**Main*********************************/
-/**                                   **/
-int main() {
-  init();
-	USART1->TDR = 0x56;
-  while(666) {
-    if(size)
-      if(putChar(buf[0])){
-        for(i=0; i<size-1; i++) {
-          buf[i] = buf[i+1];
-				}
-				size--;
-			}
-    buf[size] = getChar();
-    if(buf[size]!=0xFF) {
-      if(buf[size]>0x60 && buf[size]<0x7B)
-        buf[size] -= 0x20;
-      if(buf[size]==0x0D || buf[size]==0x0A) {
-        buf[size] = 0x0D;
-        buf[size+1] = 0x0A;
-        size++;
-      }
-      size++;
+/*Prototype functions*/
+void Init();                    //Ln. 50
+void SysTick_Handler();         //Ln. 65
+uint32_t butPress();            //Ln. 72
+void delay(uint32_t);           //Ln. 90
+/**                                    **/
+/****************************************/
+
+/**Main**********************************/
+/**                                    **/
+int main(void) {
+  /*Initialize the system.*/
+  Init();
+
+  /*This is the main function,
+   * which will turn the blue LED on
+   * and off, according to the current
+   * blinkRate. blinkRate is modified by
+   * the interrupt.
+   */
+  while (1) {
+    GPIOC->BSRR |= (1<< LED8);
+    delay(1000/(blinkRate*2));
+    GPIOC->BRR |= (1<< LED8);
+    delay(1000/(blinkRate*2));
+  }
+} //End main()
+/**                                    **/
+/****************************************/
+
+/**Functions******************************/
+/**                                    **/
+//This function will handle all initialization of the system.
+void Init() {
+  /*Configure the interrupt to run every millisecond*/
+  RCC->AHBENR |= (1<<17);
+  SysTick_Config(SystemCoreClock/1000);
+  /*Configure 8th and 9th pin as output.*/
+  RCC->AHBENR |= (1<<19);
+  GPIOC->MODER |= (1<<LED8*2) | (1<<LED9*2);
+  /*Configure button as input, and no pull up*/
+  GPIOA->MODER &= ~(3<<BUT*2);
+  GPIOA->OTYPER &= ~(3<<BUT*2);
+} //End Init()
+
+//This function is the interrupt function.
+//This will happen every millisecond.
+void SysTick_Handler() {
+  /*Increase ms tick and debouncer tick.*/
+  msTick--;
+  validPress--;
+
+  /*This is what will happen when
+   * the button is pressed.
+   * This includes a debouncer. */
+  if(butPress()) {
+    GPIOC->BSRR |= (1<< LED9);
+    if(validPress<0) {
+      (blinkRate==10)?blinkRate=1 : blinkRate++;
+      /*Gives the button a 7 ms debounce*/
+      validPress=7;
     }
-	}
-}                 
-/**                                   **/
-/***************************************/
+    while(butPress());
+    GPIOC->BRR |= (1<<LED9);
+  }
+} //End SysTick_Handler()
 
-/**FUNCTIONS****************************/
-/**                                   **/
-/* Initalize the system. To be run on startup */
-void init() {
-  portEnable('A');
-  serialStart(9600);
-} //End init()
-/**                                   **/
-/***************************************/
+//Returns 1 if button is pressed
+uint32_t butPress() {
+  return (GPIOA->IDR & (1<<BUT));
+} //End butPress()
 
-/********************************
- * The greatest pleasure in life
- * is doing what people say you can't do.
- *  *  *  *  *  *  *  *  *  *  */
+//This will delay by specified milliseconds
+void delay(uint32_t time) {
+  msTick = time;
+  while(msTick>0);
+} //End delay()
+/**                                    **/
+/****************************************/
+
+/**************
+ * That brain of mines
+ *  is something more than merely mortal
+ *    As time will show.
+ *  
+ *  Ada Lovelace
+ **************/
