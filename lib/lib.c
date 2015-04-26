@@ -117,7 +117,6 @@ void initSpeaker() {
 	TIM1->CCER |= (0x55<<0);
 	TIM1->CCMR1 |= (0x60);
 	TIM1->CCMR1 |= (0x60<<8);
-	TIM1->BDTR |= (1<<15);
   GPIOA->MODER |= (0xA<<SPEAKER);
   GPIOA->AFR[1] |= (0x22);
 } //End initSpeaker()
@@ -135,8 +134,33 @@ void speakerOn(uint16_t period, uint16_t duty1, uint16_t duty2) {
 
 /*Turns off the speaker*/
 void speakerOff() {
-  TIM1->CR1 &= ~(1<<0);
+  TIM1->CCR1 = 0;
+  TIM1->CCR2 = 0;
 } //End speakerOff()
+
+/* This enables the second speaker.
+ * The speaker is a single channel speaker
+ * Output on PB4 */
+void initSpeaker2() {
+  RCC->APB1ENR |= (1<<1);
+	TIM3->PSC = 48;
+	TIM3->CCER |= (0x01<<0);
+	TIM3->CCMR1 |= (0x60);
+  GPIOB->MODER |= (2<<8);
+  GPIOB->AFR[0] |= (1<<16);
+} //End initSpeaker2()
+
+void speaker2On(uint16_t period) {
+  period = ((SystemCoreClock/48) / (period)) - 1;
+  TIM3->ARR = period;
+  TIM3->CCR1 = (50 * period / 100);
+  TIM3->CR1 |= (1<<0);
+} //End speaker2On()
+
+void speaker2Off() {
+  TIM3->CCR1 = 0;
+} //End speaker2Off()
+
 /**                                                             **/
 /*****************************************************************/
 
@@ -146,9 +170,9 @@ void speakerOff() {
  * the int argument passed */
 void serialStart(uint16_t baud) {
   RCC->APB2ENR |= (1<<14); 
-  initPin('A', 9, ALTMODE);     //TX pin
-  initPin('A', 10, ALTMODE);    //RX pin
-  GPIOAA->AFR[1] |= (0x11<<4);
+  initPin('B', 6, ALTMODE);     //TX pin
+  initPin('B', 7, ALTMODE);    //RX pin
+  GPIOAA->AFR[0] |= (0x00<<24);
   baud = SystemCoreClock/baud;
   USART1->BRR = baud;
   USART1->CR1 |= 0xD;
@@ -171,3 +195,50 @@ int putChar(uint8_t txChar) {
 } //End putChar()
 /**                                                             **/
 /*****************************************************************/
+
+/***CLOCK*********************************************************/
+/**                                                             **/
+/* Starts the clock used for interrupts at 1ms*/
+void clockStart() {
+  SysTick_Config(SystemCoreClock/1000);
+} //End clockStart()
+/**                                                             **/
+/*****************************************************************/
+
+/***USER PUSHBUTTON***********************************************/
+/**                                                             **/
+/* Initializes the user pushbutton */
+void initButton() {
+  GPIOA->MODER &= ~(3<<BUT*2);
+  GPIOA->OTYPER &= ~(3<<BUT*2);
+} //End initButton()
+
+/* Returns 1 if button is pressed */
+uint32_t butPress() {
+  return (GPIOA->IDR & (1<<BUT));
+} //End butPress()
+/**                                                             **/
+/*****************************************************************/
+
+/**PHOTOCELL ADC**************************************************/
+/**                                                             **/
+/* Initializes photocell. Requires port A enabled to function. */
+void initPhotocell() {
+  initPin('A', 1, ANALOG);
+  RCC->APB2ENR |= (1<<9);
+  ADC1->CR |= (1<<0);
+  ADC1->CHSELR |= (1<<1);
+} //End initPhotocell()
+
+/* Starts an ADC conversion. */
+void startConv() {
+  ADC1->CR |= (1<<2);
+} //End startConv()
+
+/* Returns a scaled value of the adc to be played. */
+uint16_t getConv() {
+  return (ADC1->DR * .59) + 100; 
+} //End getConv()
+/**                                                             **/
+/*****************************************************************/
+
