@@ -14,8 +14,8 @@
 int64_t debounce = 0;
 
 /*Hexpad utility variables*/
-int scancode = 0, noteChage = 0
-    newNote, startKey = 60;
+int scancode = 0, noteChage = 0,
+    newNote = 0, startKey = 60;
 float frequency;
 
 void init();                    //Ln. 46
@@ -34,9 +34,10 @@ int main() {
     scancode = butPress();
     if(scancode==8) noteChage=1;
     else if(noteChange) {
-      if(butPress() == -1) {
-        noteChange=0;
+      if(getNum() == -1) {
+        noteChange = 0;
         startKey = newNote;
+        newNote = 0;
       }
       else if(scancode && butPress() && debounce<=0) {
         newNote = (newNote*10) + getNum();
@@ -45,7 +46,8 @@ int main() {
     }
     else if(butPress() && scancode)
 			playNote(scancode);
-		else speakerOff(); 
+		else if(!butPress())
+      speakerOff(); 
   }
 }
 /**                                   **/

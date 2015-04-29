@@ -126,6 +126,7 @@ void initSpeaker() {
  * compare1 goes to CCR1
  * compare2 goes to CCR2 */
 void speakerOn(uint16_t period, uint16_t duty1, uint16_t duty2) {
+  if((TIM1->CCR1)<(TIM1->ARR) && !(TIM1->CCR1==0)) return;
   period = ((SystemCoreClock/48) / (period)) - 1;
   TIM1->ARR = period;
   TIM1->CCR1 = (duty1 * period / 100);
