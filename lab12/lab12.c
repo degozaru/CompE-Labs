@@ -14,7 +14,7 @@
 int64_t debounce = 0;
 
 /*Hexpad utility variables*/
-int scancode = 0, noteChage = 0,
+int scancode = 0, noteChange = 0,
     newNote = 0, startKey = 60;
 float frequency;
 
@@ -32,7 +32,7 @@ int main() {
   while(666) {
     /* Process hexpad */
     scancode = butPress();
-    if(scancode==8) noteChage=1;
+    if(scancode==8) noteChange=1;
     else if(noteChange) {
       if(getNum() == -1) {
         noteChange = 0;
