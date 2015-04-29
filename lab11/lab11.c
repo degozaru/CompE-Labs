@@ -52,7 +52,7 @@ int main() {
 /**                                   **/
 /* Initalize the system. To be run on startup */
 void init() {
-  portEnable('A');
+  portEnable('B');
   serialStart(9600);
 } //End init()
 /**                                   **/
