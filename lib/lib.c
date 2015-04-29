@@ -172,7 +172,7 @@ void serialStart(uint16_t baud) {
   RCC->APB2ENR |= (1<<14); 
   initPin('B', 6, ALTMODE);     //TX pin
   initPin('B', 7, ALTMODE);    //RX pin
-  GPIOAA->AFR[0] |= (0x00<<24);
+  GPIOA->AFR[0] |= (0x00<<24);
   baud = SystemCoreClock/baud;
   USART1->BRR = baud;
   USART1->CR1 |= 0xD;
@@ -214,7 +214,7 @@ void initButton() {
 } //End initButton()
 
 /* Returns 1 if button is pressed */
-uint32_t butPress() {
+uint32_t usrButPress() {
   return (GPIOA->IDR & (1<<BUT));
 } //End butPress()
 /**                                                             **/
