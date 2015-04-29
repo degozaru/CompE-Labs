@@ -190,7 +190,7 @@ uint8_t getChar() {
  * returns 1 on successful transmit.
  * returns 0 on failed transmit. */
 int putChar(uint8_t txChar) {
-  if(~(USART1->ISR & (1<<7))) return 0;
+  if(!(USART1->ISR & (1<<7))) return 0;
   USART1->TDR = txChar;
   return 1;
 } //End putChar()
