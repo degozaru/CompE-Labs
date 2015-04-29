@@ -117,6 +117,7 @@ void initSpeaker() {
 	TIM1->CCER |= (0x55<<0);
 	TIM1->CCMR1 |= (0x60);
 	TIM1->CCMR1 |= (0x60<<8);
+	TIM1->BDTR |= (1<<15);
   GPIOA->MODER |= (0xA<<SPEAKER);
   GPIOA->AFR[1] |= (0x22);
 } //End initSpeaker()
