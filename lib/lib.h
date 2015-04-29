@@ -50,7 +50,7 @@ void clockStart();
 
 /*User Pushbutton*/
 void initButton();
-uint32_t butPress();
+uint32_t usrButPress();
 
 /*Photocell ADC*/
 void initPhotocell();
