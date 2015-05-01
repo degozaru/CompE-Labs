@@ -31,7 +31,7 @@ float frequency;
 void init();                    //Ln. 46
 void playNote(int scan);        //Ln. 82
 void turnOff(int scan);
-void printNote(int on, int note, uint64_t mil);
+//void printNote(int on, int note, uint64_t mil);
 int getNum();                   //Ln. 92
 void SysTick_Handler();         //Ln. 109
 /**                                   **/
@@ -58,9 +58,9 @@ int main() {
       }
     }
     else if(butPress() && scancode && prevNote!=scancode)
-			playNote(scancode);
+      speakerOn(scancode);
 		else if(!butPress() && prevNote!=0)
-      turnOff(prevNote);
+      turnOff(scancode);
 
     /* Process USART */
     if(size)
@@ -104,7 +104,7 @@ void playNote(int scan) {
   (scan>8)?scan-=2:scan--;
   frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
   speakerOn(frequency, 50, 50);
-  printNote(1, startKey + scan, ms); 
+  //printNote(1, startKey + scan, ms); 
 } //End playNote()
 
 /*Turns the note off*/
@@ -112,10 +112,10 @@ void turnOff(int scan) {
   prevNote=0;
   (scan>8)?scan-=2:scan--;
   speakerOff();
-  printNote(0, startKey+scan, ms);
+  //printNote(0, startKey+scan, ms);
 } //End turnOff()
 
-/* prints the note to the USART */
+/* prints the note to the USART 
 void printNote(int on, int note, uint64_t mil) {
   buf[size] = "Note ";
   size+=5;
@@ -142,7 +142,7 @@ void printNote(int on, int note, uint64_t mil) {
   buf[size] = 0x0D;
   buf[size+1] = 0x0A;
   size+=2
-} //End printNote()
+} //End printNote() */
 
 /* Gets the true number of button press
  * to the corresponding scancode. */
