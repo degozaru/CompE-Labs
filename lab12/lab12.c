@@ -12,6 +12,9 @@
 
 int i;
 
+/*Photocell util*/
+int photoOn = 1;
+
 /*Interrupt util*/
 int64_t debounce = 0;
 int64_t ms=0;
@@ -77,7 +80,8 @@ int main() {
       }
 
    /* Process Photocell */ 
-    speaker2On(getConv());
+    if(photoOn) speaker2On(getConv());
+    else speaker2Off();
     startConv();
   }
 }
@@ -99,7 +103,9 @@ void init() {
   initSpeaker();
   initSpeaker2();
   initPhotocell();
+  initButton();
   startConv();
+  initLed();
   SysTick_Config(SystemCoreClock/1000);
   serialStart(9600);
 
@@ -205,6 +211,11 @@ int getNum() {
 void SysTick_Handler() {
   if(!butPress()) debounce--;
   ms++;
+
+  if(usrButPress() && debounce<=0) {
+    photoOn ^= 1;
+    debounce = 7;
+  }
  } //End SysTick_Handler()
 /**                                   **/
 /***************************************/

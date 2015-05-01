@@ -154,6 +154,7 @@ void initSpeaker2() {
 
 void speaker2On(uint16_t period) {
   period = ((SystemCoreClock/48) / (period)) - 1;
+  if(TIM3->CNT>period) return;
   TIM3->ARR = period;
   TIM3->CCR1 = (50 * period / 100);
   TIM3->CR1 |= (1<<0);
@@ -244,3 +245,22 @@ uint16_t getConv() {
 /**                                                             **/
 /*****************************************************************/
 
+/**LEDS***********************************************************/
+/**                                                             **/
+void initLed() {
+  GPIOC->MODER |= (1<<16) | (1<<19);
+}
+void blueOn() {
+  GPIOC->BSRR |= (1<<8);
+}
+void blueOff() {
+  GPIOC->BRR |= (1<<8);
+}
+void greenOn() {
+  GPIOC->BSRR |= (1<<9);
+}
+void greenOff() {
+  GPIOC->BRR |= (1<<9);
+}
+/**                                                             **/
+/*****************************************************************/

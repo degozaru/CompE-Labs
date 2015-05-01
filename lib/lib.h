@@ -57,4 +57,10 @@ void initPhotocell();
 void startConv();
 uint16_t getConv();
 
+/*LEDS*/
+void initLed();
+void blueOn();
+void blueOff();
+void greenOn();
+void greenOff();
 #endif
