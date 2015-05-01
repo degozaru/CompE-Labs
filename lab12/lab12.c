@@ -10,9 +10,17 @@
 #include <math.h>
 #include "lib.h"
 
-/*Interrupt debouncer*/
+int i;
+
+/*Interrupt util*/
 int64_t debounce = 0;
 int64_t ms=0;
+
+/*USART util*/
+int buf[100] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
+                  0x74, 0x20, 0x43, 0x68, 0x61, 0x6E};
+int size = 11;
+
 
 /*Hexpad utility variables*/
 int scancode = 0, noteChange = 0,
@@ -22,6 +30,8 @@ float frequency;
 
 void init();                    //Ln. 46
 void playNote(int scan);        //Ln. 82
+void turnOff(int scan);
+void printNote(int on, int note, uint64_t mil);
 int getNum();                   //Ln. 92
 void SysTick_Handler();         //Ln. 109
 /**                                   **/
@@ -31,6 +41,7 @@ void SysTick_Handler();         //Ln. 109
 /**                                   **/
 int main() {
   init();
+  USART1->TDR = 0x56;
   while(666) {
     /* Process hexpad */
     scancode = butPress();
@@ -50,6 +61,14 @@ int main() {
 			playNote(scancode);
 		else if(!butPress() && prevNote!=0)
       turnOff(prevNote);
+
+    /* Process USART */
+    if(size)
+      if(putChar(buf[0])){
+        for(i=0; i<size-1; i++)
+          buf[i] = buf[i+1];
+        size--;
+      }
   }
 }
 /**                                   **/
@@ -65,9 +84,11 @@ int main() {
 void init() {
   portEnable('A');
   portEnable('C');
+  portEnable('B');
   initHex();
   initSpeaker();
   SysTick_Config(SystemCoreClock/1000);
+  serialStart(9600);
 } //End init()
 /**                                   **/
 /***************************************/
@@ -96,7 +117,32 @@ void turnOff(int scan) {
 
 /* prints the note to the USART */
 void printNote(int on, int note, uint64_t mil) {
-}
+  buf[size] = "Note ";
+  size+=5;
+  do {
+    buf[size] = (note%10) - '0';
+    size++;
+    note/=10;
+  } while(note);
+  if(on) {
+    buf[size] = " on ";
+    size+=4;
+  }
+  else {
+    buf[size] = " off ";
+    size+=5;
+  }
+  while(mil) {
+    buf[size] = (mil%10) - '0';
+    size++;
+    mil/=10;
+  }
+  buf[size] = " ms.";
+  size+=4;
+  buf[size] = 0x0D;
+  buf[size+1] = 0x0A;
+  size+=2
+} //End printNote()
 
 /* Gets the true number of button press
  * to the corresponding scancode. */
@@ -119,7 +165,7 @@ int getNum() {
 void SysTick_Handler() {
   if(!butPress()) debounce--;
   ms++;
-} //End SysTick_Handler()
+ } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
 
