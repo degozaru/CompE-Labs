@@ -143,6 +143,14 @@ void printNote(int on, int note, uint64_t mil) {
 	buf[size+3] = 'e';
 	buf[size+4] = ' ';
   size+=5;
+	numIndex=size;
+  do {
+    for(i=size; i>numIndex; i--)
+      buf[i] = buf[i-1];
+    buf[numIndex] = (note%10) + '0';
+    size++;
+    note/=10;
+  } while(note);
   if(on) {
     buf[size] = ' ';
     buf[size+1] = 'o';
@@ -162,18 +170,10 @@ void printNote(int on, int note, uint64_t mil) {
   do {
     for(i=size; i>numIndex; i--)
       buf[i] = buf[i-1];
-    buf[numIndex] = (note%10) + '0';
-    size++;
-    note/=10;
-  } while(note);
-  numIndex=size;
-  while(mil) {
-    for(i=size; i>numIndex; i--)
-      buf[i] = buf[i-1];
-    buf[size] = (mil%10) + '0';
+    buf[numIndex] = (mil%10) + '0';
     size++;
     mil/=10;
-  }
+  } while(mil);
   buf[size] = ' ';
   buf[size+1] = 'm';
   buf[size+2] = 's';
@@ -208,4 +208,3 @@ void SysTick_Handler() {
  } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
-
