@@ -25,13 +25,13 @@ int numIndex = 0;
 
 /*Hexpad utility variables*/
 int scancode = 0, noteChange = 0,
-    newNote = 0, startKey = 60,
+    startKey = 60, newNote = 0,
     prevNote = 0;
 float frequency;
 
 void init();                    //Ln. 46
 void playNote(int scan);        //Ln. 82
-void turnOff(int scan);
+void turnOff();
 void printNote(int on, int note, uint64_t mil);
 int getNum();                   //Ln. 92
 void SysTick_Handler();         //Ln. 109
@@ -58,10 +58,14 @@ int main() {
         debounce = 7;
       }
     }
-    else if(butPress() && scancode)
+    else if(butPress() && scancode) {
+			debounce = 7;
 			playNote(scancode);
-		else if(!butPress())
-      speakerOff();
+		}
+		else if(!butPress()) {
+      turnOff();
+			debounce = 7;
+		}
 		
 
     /* Process USART */
@@ -102,24 +106,23 @@ void init() {
  * two to the power of (note - 69)/12
  * times 440 Hz. */
 void playNote(int scan) {
+  (scan>8)?scan-=2:scan--;
 	if(!prevNote) { 
 		prevNote = scan;
 		printNote(1, scan+startKey, ms);
 	}
-  (scan>8)?scan-=2:scan--;
   frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
   speakerOn(frequency, 50, 50);
   //printNote(1, startKey + scan, ms); 
 } //End playNote()
 
 /*Turns the note off*/
-void turnOff(int scan) {
+void turnOff() {
 	if(prevNote) {
-		printNote(prevNote, scan+startKey, ms);
+		printNote(prevNote, prevNote+startKey, ms);
 		prevNote = 0;
 	}
   prevNote=0;
-  (scan>8)?scan-=2:scan--;
   speakerOff();
   //printNote(0, startKey+scan, ms);
 } //End turnOff()
