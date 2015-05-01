@@ -248,19 +248,20 @@ uint16_t getConv() {
 /**LEDS***********************************************************/
 /**                                                             **/
 void initLed() {
-  GPIOC->MODER |= (1<<16) | (1<<19);
+   RCC->AHBENR |= (1<<19);
+  GPIOC->MODER |= (1<<8*2) | (1<<9*2);
 }
 void blueOn() {
-  GPIOC->BSRR |= (1<<8);
+  GPIOC->BSRR |= (1<< 8);
 }
 void blueOff() {
-  GPIOC->BRR |= (1<<8);
+  GPIOC->BRR |= (1<< 8);
 }
 void greenOn() {
-  GPIOC->BSRR |= (1<<9);
+  GPIOC->BSRR |= (1<< 9);
 }
 void greenOff() {
-  GPIOC->BRR |= (1<<9);
+  GPIOC->BRR |= (1<< 9);
 }
 /**                                                             **/
 /*****************************************************************/
