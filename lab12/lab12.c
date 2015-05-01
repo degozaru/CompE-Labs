@@ -106,7 +106,7 @@ void init() {
  * two to the power of (note - 69)/12
  * times 440 Hz. */
 void playNote(int scan) {
-  (scan>8)?scan-=2:scan--;
+  if(scan>8) scan--;
 	if(!prevNote) { 
 		prevNote = scan;
 		printNote(1, scan+startKey, ms);
@@ -135,6 +135,21 @@ void printNote(int on, int note, uint64_t mil) {
 	buf[size+3] = 'e';
 	buf[size+4] = ' ';
   size+=5;
+  if(on) {
+    buf[size] = ' ';
+    buf[size+1] = 'o';
+    buf[size+2] = 'n';
+    buf[size+3] = ' ';
+    size+=4;
+  }
+  else {
+    buf[size] = ' ';
+    buf[size+1] = 'o';
+    buf[size+2] = 'f';
+    buf[size+3] = 'f';
+    buf[size+4] = ' ';
+    size+=5;
+  }
   numIndex=size;
   do {
     for(i=size; i>numIndex; i--)
@@ -151,6 +166,11 @@ void printNote(int on, int note, uint64_t mil) {
     size++;
     mil/=10;
   }
+  buf[size] = ' ';
+  buf[size+1] = 'm';
+  buf[size+2] = 's';
+  size+=3;
+
   buf[size] = 0x0D;
   buf[size+1] = 0x0A;
   size+=2;
