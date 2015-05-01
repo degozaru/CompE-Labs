@@ -20,6 +20,7 @@ int64_t ms=0;
 int buf[100] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
                   0x74, 0x20, 0x43, 0x68, 0x61, 0x6E};
 int size = 11;
+int numIndex = 0;
 
 
 /*Hexpad utility variables*/
@@ -131,12 +132,18 @@ void printNote(int on, int note, uint64_t mil) {
 	buf[size+3] = 'e';
 	buf[size+4] = ' ';
   size+=5;
+  numIndex=size;
   do {
-    buf[size] = (note%10) + '0';
+    for(i=size; i>numIndex; i--)
+      buf[i] = buf[i-1];
+    buf[numIndex] = (note%10) + '0';
     size++;
     note/=10;
   } while(note);
+  numIndex=size;
   while(mil) {
+    for(i=size; i>numIndex; i--)
+      buf[i] = buf[i-1];
     buf[size] = (mil%10) + '0';
     size++;
     mil/=10;
