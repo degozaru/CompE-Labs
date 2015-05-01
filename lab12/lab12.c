@@ -75,6 +75,10 @@ int main() {
           buf[i] = buf[i+1];
         size--;
       }
+
+   /* Process Photocell */ 
+    speaker2On(getConv());
+    startConv();
   }
 }
 /**                                   **/
@@ -93,8 +97,12 @@ void init() {
   portEnable('B');
   initHex();
   initSpeaker();
+  initSpeaker2();
+  initPhotocell();
+  startConv();
   SysTick_Config(SystemCoreClock/1000);
   serialStart(9600);
+
 } //End init()
 /**                                   **/
 /***************************************/
@@ -109,7 +117,7 @@ void playNote(int scan) {
   if(scan>8) scan--;
 	if(!prevNote) { 
 		prevNote = scan;
-		printNote(1, scan+startKey, ms);
+		printNote(0, scan+startKey, ms);
 	}
   frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
   speakerOn(frequency, 50, 50);
