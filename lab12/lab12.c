@@ -12,6 +12,10 @@
 
 int i;
 
+/*LED util*/
+int blueARR = 1, blueCNT = 0, blueO = 0;
+int greenARR = 1, greenCNT = 0, greenO = 0;
+
 /*Photocell util*/
 int photoOn = 1;
 
@@ -23,6 +27,7 @@ int64_t ms=0;
 int buf[100] = {0x69, 0x6E, 0x63, 0x65, 0x6E, 
                   0x74, 0x20, 0x43, 0x68, 0x61, 0x6E};
 int size = 11;
+int getBuff = 0;
 int numIndex = 0;
 
 
@@ -67,7 +72,6 @@ int main() {
 		}
 		else if(!butPress()) {
       turnOff();
-			debounce = 7;
 		}
 		
 
@@ -83,6 +87,19 @@ int main() {
     if(photoOn) speaker2On(getConv());
     else speaker2Off();
     startConv();
+			
+		if(blueCNT>(60/(blueARR*2))) {
+		if(blueOn) blueOff();
+		else blueOn();
+		blueO^=1;
+		blueCNT = 0;
+	}
+	if(greenCNT>(60/(greenARR*2))) {
+		if(greenOn) greenOff();
+		else greenOn();
+		greenO^= 1;
+		blueCNT = 0;
+	}
   }
 }
 /**                                   **/
@@ -108,7 +125,6 @@ void init() {
   initLed();
   SysTick_Config(SystemCoreClock/1000);
   serialStart(9600);
-
 } //End init()
 /**                                   **/
 /***************************************/
@@ -209,13 +225,38 @@ int getNum() {
 /**                                   **/
 /* Systick for debouncing */
 void SysTick_Handler() {
-  if(!butPress()) debounce--;
+  if(!butPress() && !usrButPress()) debounce--;
   ms++;
+	blueCNT++;
+	greenCNT++;
 
   if(usrButPress() && debounce<=0) {
     photoOn ^= 1;
     debounce = 7;
   }
+	
+	getBuff = getChar();
+	if(getBuff == 0x62) {
+		blueARR++;
+		if(blueARR==11) blueARR=1;
+		buf[size] = 'b';
+		size++;
+		buf[size] = 0x0D;
+		buf[size+1] = 0x0A;
+		size+=2;
+	}
+	if(getBuff == 0x67) {
+		greenARR++;
+		if(greenARR==11) greenARR=1;
+		buf[size] = 'g';
+		size++;
+		buf[size] = 0x0D;
+		buf[size+1] = 0x0A;
+		size+=2;
+	}
+	
+
+	
  } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
