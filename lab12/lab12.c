@@ -88,17 +88,17 @@ int main() {
     else speaker2Off();
     startConv();
 			
-		if(blueCNT>(60/(blueARR*2))) {
-		if(blueOn) blueOff();
+		if(blueCNT<=0) {
+		if(blueO) blueOff();
 		else blueOn();
 		blueO^=1;
-		blueCNT = 0;
+		blueCNT =1000/(2*blueARR);
 	}
-	if(greenCNT>(60/(greenARR*2))) {
-		if(greenOn) greenOff();
+	if(greenCNT<=0) {
+		if(greenO) greenOff();
 		else greenOn();
 		greenO^= 1;
-		blueCNT = 0;
+		greenCNT = 1000/(2*greenARR);
 	}
   }
 }
@@ -227,8 +227,8 @@ int getNum() {
 void SysTick_Handler() {
   if(!butPress() && !usrButPress()) debounce--;
   ms++;
-	blueCNT++;
-	greenCNT++;
+	blueCNT--;
+	greenCNT--;
 
   if(usrButPress() && debounce<=0) {
     photoOn ^= 1;
