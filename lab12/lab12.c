@@ -24,14 +24,14 @@ int size = 11;
 
 /*Hexpad utility variables*/
 int scancode = 0, noteChange = 0,
-    newNote = 0, startKey = 60
+    newNote = 0, startKey = 60,
     prevNote = 0;
 float frequency;
 
 void init();                    //Ln. 46
 void playNote(int scan);        //Ln. 82
 void turnOff(int scan);
-//void printNote(int on, int note, uint64_t mil);
+void printNote(int on, int note, uint64_t mil);
 int getNum();                   //Ln. 92
 void SysTick_Handler();         //Ln. 109
 /**                                   **/
@@ -57,10 +57,11 @@ int main() {
         debounce = 7;
       }
     }
-    else if(butPress() && scancode && prevNote!=scancode)
-      speakerOn(scancode);
-		else if(!butPress() && prevNote!=0)
-      turnOff(scancode);
+    else if(butPress() && scancode)
+			playNote(scancode);
+		else if(!butPress())
+      speakerOff();
+		
 
     /* Process USART */
     if(size)
@@ -100,7 +101,10 @@ void init() {
  * two to the power of (note - 69)/12
  * times 440 Hz. */
 void playNote(int scan) {
-  prevNote=scan;
+	if(!prevNote) { 
+		prevNote = scan;
+		printNote(1, scan+startKey, ms);
+	}
   (scan>8)?scan-=2:scan--;
   frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
   speakerOn(frequency, 50, 50);
@@ -109,39 +113,37 @@ void playNote(int scan) {
 
 /*Turns the note off*/
 void turnOff(int scan) {
+	if(prevNote) {
+		printNote(prevNote, scan+startKey, ms);
+		prevNote = 0;
+	}
   prevNote=0;
   (scan>8)?scan-=2:scan--;
   speakerOff();
   //printNote(0, startKey+scan, ms);
 } //End turnOff()
 
-/* prints the note to the USART 
+/* prints the note to the USART */
 void printNote(int on, int note, uint64_t mil) {
-  buf[size] = "Note ";
+  buf[size] = 'N';
+	buf[size+1] = 'o';
+	buf[size+2] = 't';
+	buf[size+3] = 'e';
+	buf[size+4] = ' ';
   size+=5;
   do {
-    buf[size] = (note%10) - '0';
+    buf[size] = (note%10) + '0';
     size++;
     note/=10;
   } while(note);
-  if(on) {
-    buf[size] = " on ";
-    size+=4;
-  }
-  else {
-    buf[size] = " off ";
-    size+=5;
-  }
   while(mil) {
-    buf[size] = (mil%10) - '0';
+    buf[size] = (mil%10) + '0';
     size++;
     mil/=10;
   }
-  buf[size] = " ms.";
-  size+=4;
   buf[size] = 0x0D;
   buf[size+1] = 0x0A;
-  size+=2
+  size+=2;
 } //End printNote() */
 
 /* Gets the true number of button press
