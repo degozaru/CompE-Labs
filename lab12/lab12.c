@@ -12,10 +12,12 @@
 
 /*Interrupt debouncer*/
 int64_t debounce = 0;
+int64_t ms=0;
 
 /*Hexpad utility variables*/
 int scancode = 0, noteChange = 0,
-    newNote = 0, startKey = 60;
+    newNote = 0, startKey = 60
+    prevNote = 0;
 float frequency;
 
 void init();                    //Ln. 46
@@ -44,10 +46,10 @@ int main() {
         debounce = 7;
       }
     }
-    else if(butPress() && scancode)
+    else if(butPress() && scancode && prevNote!=scancode)
 			playNote(scancode);
-		else if(!butPress())
-      speakerOff(); 
+		else if(!butPress() && prevNote!=0)
+      turnOff(prevNote);
   }
 }
 /**                                   **/
@@ -77,10 +79,24 @@ void init() {
  * two to the power of (note - 69)/12
  * times 440 Hz. */
 void playNote(int scan) {
+  prevNote=scan;
   (scan>8)?scan-=2:scan--;
   frequency = pow(2.0, ((float)(startKey + (scan*2))-69.0)/12.0) * 440.0;
   speakerOn(frequency, 50, 50);
+  printNote(1, startKey + scan, ms); 
 } //End playNote()
+
+/*Turns the note off*/
+void turnOff(int scan) {
+  prevNote=0;
+  (scan>8)?scan-=2:scan--;
+  speakerOff();
+  printNote(0, startKey+scan, ms);
+} //End turnOff()
+
+/* prints the note to the USART */
+void printNote(int on, int note, uint64_t mil) {
+}
 
 /* Gets the true number of button press
  * to the corresponding scancode. */
@@ -102,6 +118,7 @@ int getNum() {
 /* Systick for debouncing */
 void SysTick_Handler() {
   if(!butPress()) debounce--;
+  ms++;
 } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
