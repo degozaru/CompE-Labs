@@ -1,5 +1,5 @@
 /**************
- * Spring 2015 Lab 9
+ * Spring 2015 Lab 12
  * Vincent Chan
  * RedID815909699
  **************/
@@ -15,6 +15,7 @@ int i;
 /*LED util*/
 int blueARR = 1, blueCNT = 0, blueO = 0;
 int greenARR = 1, greenCNT = 0, greenO = 0;
+int butClicked = 0;
 
 /*Photocell util*/
 int photoOn = 1;
@@ -37,12 +38,12 @@ int scancode = 0, noteChange = 0,
     prevNote = 0;
 float frequency;
 
-void init();                    //Ln. 46
-void playNote(int scan);        //Ln. 82
-void turnOff();
-void printNote(int on, int note, uint64_t mil);
-int getNum();                   //Ln. 92
-void SysTick_Handler();         //Ln. 109
+void init();                                    //Ln. 110
+void playNote(int scan);                        //Ln. 134
+void turnOff();                                 //Ln. 149
+void printNote(int on, int note, uint64_t mil); //Ln. 160
+int getNum();                                   //Ln. 215
+void SysTick_Handler();                         //Ln. 232
 /**                                   **/
 /***************************************/
 
@@ -73,7 +74,6 @@ int main() {
 		else if(!butPress()) {
       turnOff();
 		}
-		
 
     /* Process USART */
     if(size)
@@ -159,6 +159,12 @@ void turnOff() {
 
 /* prints the note to the USART */
 void printNote(int on, int note, uint64_t mil) {
+  if(butClicked) {
+    buf[size] = 0x0D;
+    buf[size+1] = 0x0A;
+    size+=2;
+    butClicked=0;
+  }
   buf[size] = 'N';
 	buf[size+1] = 'o';
 	buf[size+2] = 't';
@@ -204,7 +210,7 @@ void printNote(int on, int note, uint64_t mil) {
   buf[size] = 0x0D;
   buf[size+1] = 0x0A;
   size+=2;
-} //End printNote() */
+} //End printNote() 
 
 /* Gets the true number of button press
  * to the corresponding scancode. */
@@ -223,40 +229,40 @@ int getNum() {
 
 /**Systick******************************/
 /**                                   **/
-/* Systick for debouncing */
+/* Systick interrupt happens every 1ms */
 void SysTick_Handler() {
   if(!butPress() && !usrButPress()) debounce--;
   ms++;
 	blueCNT--;
 	greenCNT--;
 
+  /* Toggles the photocell */
   if(usrButPress() && debounce<=0) {
     photoOn ^= 1;
     debounce = 7;
   }
 	
+  /* Checks if led buttons were pressed */
 	getBuff = getChar();
 	if(getBuff == 0x62) {
 		blueARR++;
 		if(blueARR==11) blueARR=1;
 		buf[size] = 'b';
 		size++;
-		buf[size] = 0x0D;
-		buf[size+1] = 0x0A;
-		size+=2;
+    butClicked=1;
 	}
 	if(getBuff == 0x67) {
 		greenARR++;
 		if(greenARR==11) greenARR=1;
 		buf[size] = 'g';
 		size++;
-		buf[size] = 0x0D;
-		buf[size+1] = 0x0A;
-		size+=2;
+    butClicked=1;
 	}
-	
-
-	
  } //End SysTick_Handler()
 /**                                   **/
 /***************************************/
+
+/* * * * * * * * * * *
+ * * The greatest pleasure in life
+ * is doing what people say you can't do.
+ * * * * * * * * * * * * * * * * * * * * */
