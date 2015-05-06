@@ -31,7 +31,6 @@ int size = 11;
 int getBuff = 0;
 int numIndex = 0;
 
-
 /*Hexpad utility variables*/
 int scancode = 0, noteChange = 0,
     startKey = 60, newNote = 0,
@@ -113,8 +112,8 @@ int main() {
  * Pins used: 8 for LED. 
  * Interrupt speed: 1 ms */
 void init() {
-  portEnable('A');
-  portEnable('C');
+	portEnable('A');
+	portEnable('C');
   portEnable('B');
   initHex();
   initSpeaker();
